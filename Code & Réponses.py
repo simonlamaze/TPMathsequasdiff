@@ -30,6 +30,7 @@ def projete(psi):
     return psi/norme(psi)
 
 def euler_explicit(psi_0,t_0,t_f,E,delta,dt):
+    T = t_f - t_0
     
     temps = np.linspace(0,T, dt)
     Psi=np.zeros((len(temps),3))
@@ -40,6 +41,7 @@ def euler_explicit(psi_0,t_0,t_f,E,delta,dt):
     return Psi 
 
 def euler_implicit(psi_0,t_0,t_f,E,delta,dt):
+    T = t_f - t_0
     temps = np.linspace(0,T, dt)
     Psi=np.zeros((len(temps),3))
     Psi[0]=psi_0
@@ -57,6 +59,7 @@ def euler_implicit(psi_0,t_0,t_f,E,delta,dt):
     return Psi
 
 def euler_projete(psi_0,t_0,t_f,E,delta,dt):
+    T = t_f - t_0
     temps = np.linspace(0,T, dt)
     Psi=np.zeros((len(temps),3))
     Psi[0]=psi_0
@@ -88,5 +91,17 @@ def euler_projete(psi_0,t_0,t_f,E,delta,dt):
 
     return Psi
 
+# Question 3
+
+alpha=0.5
+deltamin=0.4
+deltamax=3.5
+erreurs= np.array(10)
+for i in range (10):
+    deltai=random.randint(deltamin, deltamax)
+    Ei=random.randint(E-alpha, E+alpha)
+    Psi = euler_projete(psi_0,0,T,E,deltai,dt)
+    erreurs[i]= norme (Psi[len(Psi)]-np.array([0,0,1]))
+print erreurs.mean()
 
 
