@@ -26,6 +26,9 @@ Omega_z=np.array([[0,-1,0],[1,0,0],[0,0,0]])
 def norme(psi):
     return np.sqrt((psi**2).sum())
 
+def projete(psi):
+    return psi/norme(psi)
+
 def euler_explicit(psi_0,t_0,t_f,E,delta,dt):
     
     temps = np.linspace(0,T, dt)
@@ -37,10 +40,53 @@ def euler_explicit(psi_0,t_0,t_f,E,delta,dt):
     return Psi 
 
 def euler_implicit(psi_0,t_0,t_f,E,delta,dt):
-    ...
-    return ...
+    temps = np.linspace(0,T, dt)
+    Psi=np.zeros((len(temps),3))
+    Psi[0]=psi_0
+    epsilon = 0.00001
+    for i in range(1,len(Psi)):
+        P =Psi[i-1]
+        A= E*Omega_z + delta*u(dt*(i))*OMega_x
+        psi_a = P
+        psi_b= P + dt*A@psi_a
+        while norme(psi_a -psi_b)>=epsilon : 
+            psi_a =  psi_b
+            psi_b = P + dt*A@psi_a
+        Psi[i]= psi_b
+    plt.plot(t, norme(Psi))
+    return Psi
 
 def euler_projete(psi_0,t_0,t_f,E,delta,dt):
-    ...
-    return ...
+    temps = np.linspace(0,T, dt)
+    Psi=np.zeros((len(temps),3))
+    Psi[0]=psi_0
+    epsilon = 0.00001
+    for i in range(1,len(Psi)):
+        P =Psi[i-1]
+        A= E*Omega_z + delta*u(dt*(i))*OMega_x
+        psi_a = P
+        psi_b= P + dt*A@psi_a
+        while norme(psi_a -psi_b)>=epsilon : 
+            psi_a =  psi_b
+            psi_b = P + dt*A@psi_a
+        Psi[i]= projete(psi_b)
+
+    fig = plt.figure()
+
+    # syntax for 3-D projection
+    ax = plt.axes(projection ='3d')
+
+    #    defining all 3 axis
+    z = Psi[:,0]
+    x = Psi[:,1]
+    y = Psi[:,2]
+
+
+    ax.plot3D(x, y, z, 'pink')
+    ax.set_title('Trajectoire 3D')
+    plt.show()
+
+    return Psi
+
+
 
