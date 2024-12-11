@@ -25,6 +25,7 @@ def norme(psi):
     B= A.sum()
     return np.sqrt(B)
 
+
 def projete(psi):
     return psi/norme(psi)
 
@@ -109,4 +110,35 @@ def main(deltamin, deltamax ,alpha):
         erreurs[i]= norme (Psi[len(Psi)]-np.array([0,0,1]))
     return erreurs.mean()
 
+#Question 4 
 
+#a) Thm d'unicité des solutions
+#b) On dérive
+#c)
+
+def proj_so3 (M): # M une matrice
+     U , sigma , V = np.linalg.svd(M)
+     return U@(V.t)
+
+def euler_so3 ( psi_0,t_0,t_f,E,delta,dt):
+    T = t_f - t_0
+    u = lambda t: (1-np.cos(2*np.pi*t/T))*np.cos(E*t+ np.sin(np.pi *t/T)/(np.pi/T))
+    A = lambda t: np.eye(3) + dt*(u(dt*i)*delta*Omega_x +E*Omega_z)
+    temps = np.arange(0,T, dt)
+
+    U=np.zeros((len(temps),3))
+
+    U[0]=np.eye(3)
+    epsilon = 0.00001
+    for i in range(1,len(U)):
+        u =U[i-1]
+        u_a = u
+        u_b= A(dt*(i-1))@u_a
+        while norme((u_a -u_b).flatten())>=epsilon : 
+            u_a =  u_b
+            u_b = A(dt*i)@u_a
+        U[i]= proj_so3(u_b)
+
+    plt.plot(temps, norme(U@psi_0)) # méthode implicite avec la projection
+
+ #d)  Les preuves vont bien (j'y puis pas encore arrivé)  + structure de group de SO3
